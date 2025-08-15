@@ -1,0 +1,42 @@
+#!/bin/bash
+#PBS -N MC_e
+#PBS -o /home/zhihao/Logs
+#PBS -e /home/zhihao/Logs
+#PBS -l select=1:ncpus=1:mem=10gb
+#PBS -l walltime=02:00:00
+
+echo "===== Job started at $(date '+%Y-%m-%d %H:%M:%S') ====="
+WORKDIR="/home/zhihao/Simulations/MC_Production"
+cd "$WORKDIR" || exit 1
+
+if command -v apptainer >/dev/null 2>&1; then
+  RUNNER=apptainer
+elif command -v singularity >/dev/null 2>&1; then
+  RUNNER=singularity
+else
+  echo "ERROR: neither apptainer nor singularity found in \$PATH" >&2
+  exit 2
+fi
+
+CONTAINER="/home/zhihao/Images/softwarecontainer_workshop.sif"
+
+mapfile -t JOBS < <(ls -1 "$WORKDIR"/shell/wcsim_wCDS_e-_Uniform_0_1200MeV_*.sh | sort)
+TOTAL=${#JOBS[@]}
+
+if [[ -z "$IDX" ]]; then
+  echo "ERROR: IDX not set" >&2
+  exit 3
+fi
+
+if (( IDX < 0 || IDX >= TOTAL )); then
+  echo "ERROR: IDX $IDX out of range (0..$((TOTAL-1)))" >&2
+  exit 3
+fi
+
+TARGET_SH="${JOBS[$IDX]}"
+
+mkdir -p "$WORKDIR"/log "$WORKDIR"/out
+
+$RUNNER exec -B "$WORKDIR":/mnt "$CONTAINER" bash -lc "source /opt/entrypoint.sh && /mnt/shell/$(basename "$TARGET_SH")"
+
+echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="
