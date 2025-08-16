@@ -19,6 +19,8 @@ There are two kinds of scripts starting with a number in general -- `.sh` and `.
 
 Scripts that starts without a number in their name is not used for direct runs, they are called and used in other scripts that starts with a number, so you should never run them on your own.
 
+### More Events
+If you want to run on more events, you can modify `00_create_mac_files.sh` But all time limits in `.pbs` file is based on 1k events per job, so you may need to adjust it based on your real number of events.
 
 ## Usage
 ### `.sh` Script
