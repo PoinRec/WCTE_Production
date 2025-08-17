@@ -11,16 +11,20 @@ I highly recommend `software_workshop.sif` for the image of WCSim since I source
 
 
 ## Scripts
-For most scripts under the subfolder like `electron`, they start with a number (e.g. `00_create_mac_files,sh`, `03_run_conversion2npz.pbs`) indicating the sequence you should execute the shell script in. The Script `02_run_validation.pbs` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `03_run_conversion2npz.pbs` at the same time. 
+For most scripts under the subfolder like `electron`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_run_conversion2npz.pbs`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.pbs` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_run_conversion2npz.pbs` at the same time.
 
-Plus, the script `99_clear.sh` under `WCTE_Production` is a script to clean up all files generated in the process of simulation under folders like `fig/`, `log/`, `mac/`, `out/`, `shell/` and some geofiles which are usually in the form of `geo*.txt`. The number 99 is just an indication that you should run this script after the whole process of simulation. Usually you need to run it if you want to run MC simulation 
+Plus, the script `99_clear.sh` under `WCTE_Production` is a script to clean up all files generated in the process of simulation under folders like `fig/`, `log/`, `mac/`, `out/`, `shell/` and some geofiles which are usually in the form of `geo*.txt`. The number 99 is just an indication that you should run this script after the whole process of simulation. Usually you need to run it if you want to run another MC simulation for a pariticle you've already run with.
 
 There are two kinds of scripts starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS.
 
 Scripts that starts without a number in their name is not used for direct runs, they are called and used in other scripts that starts with a number, so you should never run them on your own.
 
+### `XX_resubmit_missing.sh`
+This is a special script used when you submitted a large amount of jobs, but some of them failed. The code can help you find which of the jobs failed (by checking some missing `.root` files compared to `.sh` files) and resubmit them.
+
+
 ### More Events
-If you want to run on more events, you can modify `00_create_mac_files.sh` But all time limits in `.pbs` file is based on 1k events per job, so you may need to adjust it based on your real number of events.
+If you want to run on more events, you can modify `00_create_mac_and_submit_all.sh` But all time limits in `.pbs` file is based on 10k events per job times 100 jobs, so you may need to adjust it based on your real number of events.
 
 ## Usage
 ### `.sh` Script
@@ -47,9 +51,15 @@ For `.pbs` scripts, you can run them like this:
 qsub some_number_*.sh
 ```
 
-Specially, for `02_run_validation.pbs`, in default it displays event #42. But you can make it display any event you want by running the command line below in your shell:
+Specially, for `00_create_mac_and_submit_all.sh` you can always pass a `-f` to indicate how many `.mac` files you want to generate (by default it's 10). Basic Usage is listed below:
+
 ```bash
-qsub -v EVENT_ID=137 02_run_validation.pbs
+./00_create_mac_and_submit_all.sh -f 100
+```
+
+And for `01_run_validation.pbs`, in default it displays event #42. But you can make it display any event you want by running the command line below in your shell:
+```bash
+qsub -v EVENT_ID=137 01_run_validation.pbs
 ```
 
 

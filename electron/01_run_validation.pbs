@@ -1,14 +1,19 @@
 #!/bin/bash
-#PBS -N Convert2npz
+#PBS -N WCSim_validate
 #PBS -o /home/zhihao/Logs/
 #PBS -e /home/zhihao/Logs/
 #PBS -l select=1:ncpus=1:mem=4gb
-#PBS -l walltime=00:30:00
+#PBS -l walltime=24:00:00
+
+# Usage: qsub -v EVENT_ID=42 01_run_validation.pbs
 
 echo "===== Job started at $(date '+%Y-%m-%d %H:%M:%S') ====="
 
 
-~/Scripts/gamma/convert2npz.sh
+EVENT_ID="${EVENT_ID:-42}"
+
+~/Scripts/electron/validation.sh "$EVENT_ID"
 
 
 echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="
+

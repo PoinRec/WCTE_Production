@@ -3,9 +3,10 @@
 #PBS -o /home/zhihao/Logs
 #PBS -e /home/zhihao/Logs
 #PBS -l select=1:ncpus=1:mem=10gb
-#PBS -l walltime=02:00:00
+#PBS -l walltime=24:00:00
 
 echo "===== Job started at $(date '+%Y-%m-%d %H:%M:%S') ====="
+
 WORKDIR="/home/zhihao/Simulations/MC_Production"
 cd "$WORKDIR" || exit 1
 
