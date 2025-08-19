@@ -11,7 +11,7 @@ I highly recommend `software_workshop.sif` for the image of WCSim since I source
 
 
 ## Scripts
-For most scripts under the subfolder like `electron`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_run_conversion2npz.pbs`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.pbs` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_run_conversion2npz.pbs` at the same time.
+For most scripts under the subfolder like `electron`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_root2npz.pbs`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.pbs` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_root2npz.pbs` at the same time.
 
 Plus, the script `99_clear.sh` under `WCTE_Production` is a script to clean up all files generated in the process of simulation under folders like `fig/`, `log/`, `mac/`, `out/`, `shell/` and some geofiles which are usually in the form of `geo*.txt`. The number 99 is just an indication that you should run this script after the whole process of simulation. Usually you need to run it if you want to run another MC simulation for a pariticle you've already run with.
 

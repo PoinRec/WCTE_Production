@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N Convert2npz
+#PBS -N npz2h5
 #PBS -o /home/zhihao/Logs/
 #PBS -e /home/zhihao/Logs/
 #PBS -l select=1:ncpus=1:mem=4gb
@@ -8,7 +8,7 @@
 echo "===== Job started at $(date '+%Y-%m-%d %H:%M:%S') ====="
 
 
-~/Scripts/electron/convert2npz.sh
+~/Scripts/gamma/npz2h5.sh
 
 
 echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="
