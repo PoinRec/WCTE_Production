@@ -7,13 +7,13 @@ There are several different folders under `WCTE_Production/` (e.g. `e-/`, `gamma
 ## Dependencies
 This repo needs environment for both [**WatChMaL**](https://github.com/WatChMaL/WatChMaL) and [**WCSim**](https://github.com/WCSim/WCSim) so you may need twocontainer images.
 
-To successfully run this repo, you need to clone the `dev` branch of my fork of the [**MC_Production**](https://github.com/PoinRec/MC_Production/tree/dev) repository, which modifies the output path to write under `/lustre` due to the large file size.
+To successfully run this repo, you need to clone the `dev` branch of my fork of the [**MC_Production**](https://github.com/PoinRec/MC_Production/tree/dev) repository, which modifies the output path to write under whatever path you want (in my case `/lustre` due to the large file size).
  
 I highly recommend `software_workshop.sif` for the image of WCSim since I source all the necessary environment variables using `source /opt/entrypoint.sh` in my scripts. So if you want to use other images, you may need to modify that.
 
 
 ## `config.sh`
-I’ve tried to make this repo as self-contained as possible. Most parameters can be configured without modifying the code, via the `config.sh` file.
+I’ve tried to make this repo as encapsulated as possible. Most parameters can be configured without modifying the code, via the `config.sh` file.
 
 An example file `EXAMPLE_config.sh` is provided under `WCTE_Production`. You should create your own `config.sh` in the same directory by copying and modifying this example before running any simulations.
 
@@ -93,7 +93,7 @@ cd gamma/
 mv MC_e-.pbs/ MC_gamma.pbs
 ```
 
-Then, change all occurrences of `e-` to `gamma` using Vim:
+Then, change all occurrences of `e-` to `gamma` using Vim.
 
 ```vim
 :%s/e-/gamma/gc
