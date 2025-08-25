@@ -1,7 +1,9 @@
 #!/bin/bash
-set -euo pipefail
 
-cd ~/Simulations/MC_Production
+set -euo pipefail
+source $HOME/WCTE_Production/config.sh
+
+cd $MC_PRODUCTION
 
 # default
 F=10
@@ -14,13 +16,13 @@ done
 
 python3 createWCSimFiles.py -p gamma -u 0,1200 -n 10000 -f "$F" -s 42
 
-chmod u+x ./shell/*.sh 
+chmod u+x $OUTPUT_PATH/gamma/shell/*.sh 
 
 
 
-PBS_SCRIPT="$HOME/Scripts/gamma/MC_gamma.pbs"
+PBS_SCRIPT="$HOME/WCTE_Production/gamma/MC_gamma.pbs"
 
 for i in $(seq 0 $((F - 1))); do
         echo "Submitting job IDX=$i ..."
-        qsub -v IDX=$i "$PBS_SCRIPT"
+        qsub -v IDX=$i -o "$OUT_LOG" -e "$ERR_LOG" "$PBS_SCRIPT"
 done

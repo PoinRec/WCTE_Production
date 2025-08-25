@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N npz2h5
+#PBS -l select=1:ncpus=1:mem=32gb
+#PBS -l walltime=240:00:00
+
+echo "===== Job started at $(date '+%Y-%m-%d %H:%M:%S') ====="
+
+source $HOME/WCTE_Production/config.sh
+
+mkdir -p "$OUTPUT_PATH/e-"
+
+singularity exec -B "$HOME":"$HOME" \
+                -B "$MYLUSTRE":"$MYLUSTRE" \
+                "$IMAGE_H5" \
+                bash -lc "python $DATATOOLS/root_utils/np_to_digihit_array_hdf5.py \
+                $OUTPUT_PATH/e-/npzfiles/wcsim_wCDS_e-_Uniform_0_1200MeV_*.npz \
+                -o $OUTPUT_PATH/e-/wcsim_wCDS_e-_Uniform_0_1200MeV_dighit.h5 \
+                -m 100 -H 135.71175 -R 153.7963"
+
+echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="

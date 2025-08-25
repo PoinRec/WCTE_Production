@@ -1,30 +1,53 @@
 # WCTE_Production
 Scripts to run WCTE Monte Carlo Simulations on idark and to convert the output .root files from WCSim to .h5 files for further WatChMaL training.
 
-There are several different folders under `WCTE_Production/` (e.g. `electron/`, `gamma/`), representing scripts for generating different particles. For now, there are only scripts for cases that the pariticles are uniformly distributed -- both homogeneous and isotropic.
+There are several different folders under `WCTE_Production/` (e.g. `e-/`, `gamma/`), representing scripts for generating different particles. For now, there are only scripts for cases that the pariticles are uniformly distributed -- both homogeneous and isotropic.
 
 
 ## Dependencies
 This repo needs environment for both [**WatChMaL**](https://github.com/WatChMaL/WatChMaL) and [**WCSim**](https://github.com/WCSim/WCSim) so you may need twocontainer images.
 
-I highly recommend `software_workshop.sif` for the image of WCSim since I source all the necessary environment variables using `source /opt/entrypoint.sh` in my scripts. But if you want to use other images, you may need to modify that.
+To successfully run this repo, you need to clone the `dev` branch of my fork of the [**MC_Production**](https://github.com/PoinRec/MC_Production/tree/dev) repository, which modifies the output path to write under `/lustre` due to the large file size.
+ 
+I highly recommend `software_workshop.sif` for the image of WCSim since I source all the necessary environment variables using `source /opt/entrypoint.sh` in my scripts. So if you want to use other images, you may need to modify that.
+
+
+## `config.sh`
+I’ve tried to make this repo as self-contained as possible. Most parameters can be configured without modifying the code, via the `config.sh` file.
+
+An example file `EXAMPLE_config.sh` is provided under `WCTE_Production`. You should create your own `config.sh` in the same directory by copying and modifying this example before running any simulations.
+
+All scripts begin by sourcing `config.sh` via `source $HOME/WCTE_Production/config.sh`, so that all variables are properly loaded. Therefore, the only path you must keep consistent is placing `WCTE_Production` directly under your `$HOME`.
+
+Most variables in `config.sh` specify paths, except for `NO_MNT`. If `NO_MNT=TRUE` is set, the container does **not** mount directories under `/mnt`. Instead, it mounts them directly using paths like:
+
+```bash
+singularity exec -B "$HOME":"$HOME" \
+        -B "$MYLUSTRE":"$MYLUSTRE" \
+        "$IMAGE_H5" \
+        bash -lc "
+                # SOME SCRIPTS
+                "
+```
+
+If you’re unsure, just set `NO_MNT=TRUE` as shown in `EXAMPLE_config.sh`.
+
+I've involved `config.sh` in `.gitignore` so its change won't be saved by git.
 
 
 ## Scripts
-For most scripts under the subfolder like `electron`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_root2npz.pbs`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.pbs` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_root2npz.pbs` at the same time.
+For most scripts under the subfolder like `e-/`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_root2npz.sh`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.sh` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_root2npz.sh` at the same time.
 
-Plus, the script `99_clear.sh` under `WCTE_Production` is a script to clean up all files generated in the process of simulation under folders like `fig/`, `log/`, `mac/`, `out/`, `shell/` and some geofiles which are usually in the form of `geo*.txt`. The number 99 is just an indication that you should run this script after the whole process of simulation. Usually you need to run it if you want to run another MC simulation for a pariticle you've already run with.
+There are two kinds of scripts starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS. And in general, all scripts you need to run in command line are all `.sh` files.
 
-There are two kinds of scripts starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS.
+Scripts that starts without a number (always in the `*.pbs` form) in their name is not used for direct runs, they are called and used in other `.sh` scripts that starts with a number, so you should never run them on your own.
 
-Scripts that starts without a number in their name is not used for direct runs, they are called and used in other scripts that starts with a number, so you should never run them on your own.
-
-### `XX_resubmit_missing.sh`
-This is a special script used when you submitted a large amount of jobs, but some of them failed. The code can help you find which of the jobs failed (by checking some missing `.root` files compared to `.sh` files) and resubmit them.
+### `XX_resubmit_missing_root.sh`, `YY_resubmit_mission_npz.sh`
+These are special scripts used when you submitted a large amount of jobs, but some of them failed. The code can help you find which of the jobs failed (by checking some missing output files compared to input files) and resubmit them.
 
 
 ### More Events
-If you want to run on more events, you can modify `00_create_mac_and_submit_all.sh` But all time limits in `.pbs` file is based on 10k events per job times 100 jobs, so you may need to adjust it based on your real number of events.
+If you want to run on more events, you should always changing the `.mac` files `00_create_mac_and_submit_all.sh` generates (detailed usage is mentioned below). Modifying the number of events generated by each `.mac` file in `00_create_mac_and_submit_all.sh` is discouraged, since all the time limits in `.pbs` file is based on 10k events per job times 100 jobs, so you may need to adjust it based on your real number of events if you really wanna do so.
 
 ## Usage
 ### `.sh` Script
@@ -45,22 +68,34 @@ to run it, or run the command line below to change the mode:
 chmod u+x some_number_*.sh
 ```
 
-### `.pbs` Script
-For `.pbs` scripts, you can run them like this:
-```bash
-qsub some_number_*.sh
-```
-
 Specially, for `00_create_mac_and_submit_all.sh` you can always pass a `-f` to indicate how many `.mac` files you want to generate (by default it's 10). Basic Usage is listed below:
 
 ```bash
 ./00_create_mac_and_submit_all.sh -f 100
 ```
 
-And for `01_run_validation.pbs`, in default it displays event #42. But you can make it display any event you want by running the command line below in your shell:
+And for `01_run_validation.sh`, in default it displays event #42. But you can make it display any event you want by running the command line below in your shell:
 ```bash
-qsub -v EVENT_ID=137 01_run_validation.pbs
+./01_run_validation 137
 ```
 
 
+## Modifying the scripts
+If you want to add additional particles, simply ensure that the particle folder name matches the value you pass to the `-p` option. This convention makes it easier to check and debug your setup.
+
+If you've modified many scripts under, say, the `e-/` folder and don't want to manually replicate the changes under `gamma/`, a convenient approach is to remove `gamma/` and copy `e-/` instead:
+
+```bash
+cd ~/WCTE_Production
+rm -rf gamma/
+cp -r e-/ gamma/
+cd gamma/
+mv MC_e-.pbs/ MC_gamma.pbs
+```
+
+Then, change all occurrences of `e-` to `gamma` using Vim:
+
+```vim
+:%s/e-/gamma/gc
+```
 

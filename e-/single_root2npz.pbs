@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -N root2npz
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=01:00:00
+
+set -euo pipefail
+source $HOME/WCTE_Production/config.sh
+
+f="$f"
+bname=$(basename "$f" .root)
+
+singularity exec -B "$HOME":"$HOME" \
+		-B "$MYLUSTRE":"$MYLUSTRE" \
+		"$IMAGE_SIM" \
+		bash -lc "
+			source /opt/entrypoint.sh && \
+    			export PYTHONPATH=\$DATATOOLS:\$PYTHONPATH && \
+    			mkdir -p \"${OUTPUT_PATH}/e-/npzfiles\" && \
+    			python ${DATATOOLS}/root_utils/event_dump.py \"$f\" -d \"${OUTPUT_PATH}/e-/npzfiles\"
+"
