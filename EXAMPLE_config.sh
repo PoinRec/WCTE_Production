@@ -1,25 +1,25 @@
 #!/bin/bash
 
 # Image Used
-export IMAGE_SIM="/home/zhihao/Images/softwarecontainer_workshop.sif"
-export IMAGE_H5="/home/zhihao/Images/larcv2_ub2204-cuda121-torch251-larndsim-2025-03-20.sif"
+export IMAGE_SIM="/absolute/path/to/your/image/for/WCSim"
+export IMAGE_H5="/absolute/path/to/your/image/for/WatChMaL"
 
 # Your lustre
-export MYLUSTRE="/lustre/work/zhihao"
+export MYLUSTRE="/absolute/path/to/your/folder/under/lustre"
 
 # Output file path
-export OUTPUT_PATH="/lustre/work/zhihao/Data/0002_10mil_e-_10mil_gamma_production_20250821"
+export OUTPUT_PATH="/absolute/path/to/your/folder/under/lustre/some/output/path/XXXX_N_e-_N_gamma_production_YYYYMMDD"
 
 # Log path
-export OUT_LOG="/home/zhihao/Logs/Outputs"
-export ERR_LOG="/home/zhihao/Logs/Errors"
+export OUT_LOG="/absolute/path/to/your/Logs/Outputs"
+export ERR_LOG="/absolute/path/to/your/Logs/Errors"
 
-# Ouput .h5 filename
-export FILENAME="wcsim_wCDS_10mil_e-_10mil_gamma_Uniform_0_1200MeV_dighit.h5"
+# Output .h5 filename
+export FILENAME="the_filename_of_merged_h5_file"
 
 # Some Repos needed
-export DATATOOLS="/home/zhihao/Simulations/DataTools"
-export MC_PRODUCTION="/home/zhihao/Simulations/MC_Production"
+export DATATOOLS="/absolute/path/to/Repo/DataTools"
+export MC_PRODUCTION="/absolute/path/to/Repo/MC_Production"
 
 # Others
 export NO_MNT=TRUE
