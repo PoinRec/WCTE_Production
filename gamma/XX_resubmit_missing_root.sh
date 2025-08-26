@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
-source $HOME/MC_Production/config.sh
+source $HOME/WCTE_Production/config.sh
 
 PBS_SCRIPT="$HOME/WCTE_Production/gamma/MC_gamma.pbs"
 
