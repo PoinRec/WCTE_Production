@@ -5,4 +5,4 @@ source $HOME/WCTE_Production/config.sh
 
 event_id="${1:-42}"
 
-qsub -v EVENT_ID=$event_id -o "$OUT_LOG" -e "$ERR_LOG" validation.pbs
+qsub -v EVENT_ID=$event_id -o "$OUT_LOG" -e "$ERR_LOG" $HOME/WCTE_Production/gamma/validation.pbs
