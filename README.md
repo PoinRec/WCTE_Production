@@ -38,7 +38,7 @@ I've involved `config.sh` in `.gitignore` so its change won't be saved by git.
 ## Scripts
 For most scripts under the subfolder like `e-/`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_root2npz.sh`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.sh` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_root2npz.sh` at the same time.
 
-There are two kinds of scripts starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS. And in general, all scripts you need to run in command line are all `.sh` files.
+There are two kinds of scripts starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS. And in general, all scripts (except `04_merge_h5.pbs` which you should run with `qsub 04_merge_h5.pbs`)you need to run in command line are all `.sh` files.
 
 Scripts that starts without a number (always in the `*.pbs` form) in their name is not used for direct runs, they are called and used in other `.sh` scripts that starts with a number, so you should never run them on your own.
 

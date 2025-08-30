@@ -1,4 +1,9 @@
 #!/bin/bash
+#PBS -N MC_e-
+#PBS -l select=1:ncpus=1:mem=32gb
+#PBS -l walltime=02:00:00
+
+echo "===== Job started at $(date '+%Y-%m-%d %H:%M:%S') ====="
 
 set -euo pipefail
 source $HOME/WCTE_Production/config.sh
@@ -12,3 +17,5 @@ singularity exec -B "$HOME":"$HOME" \
       		$OUTPUT_PATH/gamma/wcsim_wCDS_gamma_Uniform_0_1200MeV_dighit.h5 \
       		-o $OUTPUT_PATH/$FILENAME
   		"
+
+echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="
