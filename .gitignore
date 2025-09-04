@@ -1,2 +1,15 @@
+# temporary files
 *.swp
+
+# config file
 config.sh
+
+# log files
+*.log
+
+# ROOT ACLiC auto-generated files
+*_C.so
+*_C.d
+*_C_ACLiC_dict.*
+*_C_ACLiC_map
+*.pcm
