@@ -14,7 +14,7 @@ singularity exec -B "$HOME":"$HOME" \
 	bash -lc "
 		python $DATATOOLS/root_utils/merge_h5.py \
       		$OUTPUT_PATH/e-/wcsim_wCDS_e-_Uniform_0_1200MeV_dighit.h5 \
-      		$OUTPUT_PATH/gamma/wcsim_wCDS_gamma_Uniform_0_1200MeV_dighit.h5 \
+      		$OUTPUT_PATH/gamma/wcsim_wCDS_gamma_Uniform_10_1210MeV_dighit.h5 \
       		-o $OUTPUT_PATH/$FILENAME
   		"
 

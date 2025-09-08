@@ -19,7 +19,7 @@ else
 fi
 
 
-mapfile -t JOBS < <(ls -1 "$OUTPUT_PATH"/gamma/shell/wcsim_wCDS_gamma_Uniform_0_1200MeV_*.sh | sort)
+mapfile -t JOBS < <(ls -1 "$OUTPUT_PATH"/gamma/shell/wcsim_wCDS_gamma_Uniform_10_1210MeV_*.sh | sort)
 TOTAL=${#JOBS[@]}
 
 if [[ -z "$IDX" ]]; then

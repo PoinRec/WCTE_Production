@@ -13,8 +13,8 @@ singularity exec -B "$HOME":"$HOME" \
                 -B "$MYLUSTRE":"$MYLUSTRE" \
                 "$IMAGE_H5" \
                 bash -lc "python $DATATOOLS/root_utils/np_to_digihit_array_hdf5.py \
-                $OUTPUT_PATH/gamma/npzfiles/wcsim_wCDS_gamma_Uniform_0_1200MeV_*.npz \
-                -o $OUTPUT_PATH/gamma/wcsim_wCDS_gamma_Uniform_0_1200MeV_dighit.h5 \
+                $OUTPUT_PATH/gamma/npzfiles/wcsim_wCDS_gamma_Uniform_10_1210MeV_*.npz \
+                -o $OUTPUT_PATH/gamma/wcsim_wCDS_gamma_Uniform_10_1210MeV_dighit.h5 \
                 -m 100 -H 135.71175 -R 153.7963"
 
 echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="

@@ -38,7 +38,7 @@ I've involved `config.sh` in `.gitignore` so its change won't be saved by git.
 ## Scripts
 For most scripts under the subfolder like `e-/`, they start with a number (e.g. `00_create_mac_and_submit_all.sh`, `02_root2npz.sh`) indicating the sequence you should execute the shell script in. The Script `01_run_validation.sh` is not necessary for the whole pipeline of Monte Carlo simulation, they are just inserted in a proper position they should be executed. But you can also run it with `02_root2npz.sh` at the same time.
 
-There are two kinds of scripts(actually, with an extra `ZZ_check_gamma_conv.C` whose usage will be mentioned later) starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS. And in general, all scripts you need to run in command line are all `.sh` files.
+There are two kinds of scripts (actually three, with an extra `ZZ_check_gamma_conv.C` whose usage will be mentioned later) starting with a number in general -- `.sh` and `.pbs`, `*.sh` are scripts that can be finish in seconds so can be run on login node, while `.pbs` are scripts that takes long time so should be submitted using PBS. And in general, all scripts you need to run in command line are all `.sh` files.
 
 Scripts that starts without a number (always in the `*.pbs` form) in their name is not used for direct runs, they are called and used in other `.sh` scripts that starts with a number, so you should never run them on your own.
 
@@ -52,24 +52,30 @@ This is especially for plotting the gamma conversion length, the usage is a litt
 cd WCTE_Production/gamma
 source ../config.sh
 singularity shell -B $HOME:$HOME -B $MYLUSTRE:$MYLUSTRE ~/Images/softwarecontainer_workshop.sif
+
 # in singularity
 source /opt/entrypoint.sh
 root -l
+
 # in root
 .L ZZ_check_gamma_conv.C
-ZZ_check_gamma_conv.C();
-# by default, the function uses output files from config.sh, and only analysis *0000.root. You can use ZZ_check_gamma_conv(nullptr, false); for analyzing all root files (a little bit slow though)
+ZZ_check_gamma_conv();
+
+# by default, the function uses output files from config.sh, and only analysis *0000.root.
+# You can use `ZZ_check_gamma_conv(nullptr, false);` for analyzing all root files (a little bit slow though)
+
 .q  	# exit from root
 exit	# exit from singularity
 ```
 
-Plus, you can run it with `nohup` when trying to analyzing all root files, which continues to run after you log out:
+Plus, you can run it with `nohup` when trying to analyzing all root files, which continues to run after you log out (This can still be killed if you are running for too long time on the login node, so a better way for a extremely large dataset, say > 0.3 mil events, is to write a `.pbs`):
+
 ```bash
 nohup singularity exec \
   -B $HOME:$HOME -B $MYLUSTRE:$MYLUSTRE \
   ~/Images/softwarecontainer_workshop.sif \
   bash -c "source /opt/entrypoint.sh && \
-           root -l -b -q 'ZZ_check_gamma_conv.C+(nullptr,true)'" \
+           root -l -b -q 'ZZ_check_gamma_conv.C+(nullptr,false)'" \
   > gamma_conv.log 2>&1 &
 ```
 And you can view the status of this job by `ps -u $USER | grep root`. 
@@ -123,9 +129,21 @@ cd gamma/
 mv MC_e-.pbs/ MC_gamma.pbs
 ```
 
-Then, change all occurrences of `e-` to `gamma` using Vim.
+Then, change all occurrences of `e-` to `gamma` and also `*_0_1200MeV*` to `*_10_1210MeV*` (for gamma, there's threshold of 1.022 MeV to convert into electron and positron, so the energy range should be shifted a little) using Vim:
 
 ```vim
 :%s/e-/gamma/gc
+:%s/_0_1200MeV/_10_1210MeV/gc
 ```
+
+In `00_create_mac_and_submit_all.sh`, you should also change `python3 createWCSimFiles.py -p gamma -u 0,1200 -n 10000 -f "$F" -s 42` to `python3 createWCSimFiles.py -p gamma -u 10,1210 -n 10000 -f "$F" -s 42` to adjust the energy range.
+
+
+Besides all these, there is a tiny difference of `00_create_mac_and_submit_all.sh` between e- and gamma: in gamma production scripts, you should use the gamma-conversion option (which will make the gamma converting into electrons and positrons as soon as they are generated), so that you can control the conversion vertex instead of the gamma emitting position (it usually takes ~ 48 cm for gamma to convert in water).
+
+To achieve that, the script `00_create_mac_and_submit_all.sh` for gamma has an additional line:
+```bash
+find "$OUTPUT_PATH/gamma/mac/" -type f -name "wcsim*.mac" -exec sed -i 's|#/mygen/generator gps|#/mygen/generator gamma-conversion|' {} +
+```
+which changes `/mygen/generator gps` to `/mygen/generator gamma-conversion` in all "wcsim\*.mac" files
 

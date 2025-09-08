@@ -9,7 +9,7 @@ cd "${OUTPUT_PATH}/gamma"
 
 echo "[INFO] Scanning for missing output files..."
 
-mapfile -t SH_FILES < <(ls -1 shell/wcsim_wCDS_gamma_Uniform_0_1200MeV_*.sh | sort)
+mapfile -t SH_FILES < <(ls -1 shell/wcsim_wCDS_gamma_Uniform_10_1210MeV_*.sh | sort)
 
 missing_count=0
 

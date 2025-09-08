@@ -14,7 +14,9 @@ while getopts "f:" opt; do
 	esac
 done
 
-python3 createWCSimFiles.py -p gamma -u 0,1200 -n 10000 -f "$F" -s 42
+python3 createWCSimFiles.py -p gamma -u 10,1210 -n 10000 -f "$F" -s 42
+
+find "$OUTPUT_PATH/gamma/mac" -type f -name "wcsim*.mac" -exec sed -i 's|/mygen/generator gps|/mygen/generator gamma-conversion|' {} +
 
 chmod u+x $OUTPUT_PATH/gamma/shell/*.sh 
 
