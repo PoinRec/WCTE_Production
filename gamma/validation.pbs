@@ -23,6 +23,6 @@ singularity exec -B "$HOME":"$HOME" \
             	-B "$MYLUSTRE":"$MYLUSTRE" \
             	"$IMAGE_SIM" \
            	bash -lc "source /opt/WCSim/build/this_wcsim.sh && \
-          	root -l -b -q \"${MC_PRODUCTION}/validation/EventDisplay_SingleEvent.c(\\\"${OUTPUT_PATH}/gamma/rootfiles/wcsim_wCDS_gamma_Uniform_10_1110MeV_*.root\\\", ${EVENT_ID})\""
+          	root -l -b -q \"${MC_PRODUCTION}/validation/EventDisplay_SingleEvent.c(\\\"${OUTPUT_PATH}/gamma/rootfiles/wcsim_wCDS_gamma_Uniform_10_1210MeV_*.root\\\", ${EVENT_ID})\""
 
 echo "===== Job ended at $(date '+%Y-%m-%d %H:%M:%S') ====="
